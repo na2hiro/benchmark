@@ -7,8 +7,8 @@ const(
 	BLANK = -1
 )
 
-func getAround()[][]int{
-	return [][]int{{1,1},{1,0},{1,-1},{0,1},{0,-1},{-1,1},{-1,0},{-1,-1}} 
+func getAround()[8][2]int{
+	return [8][2]int{{1,1},{1,0},{1,-1},{0,1},{0,-1},{-1,1},{-1,0},{-1,-1}} 
 }
 func main(){
 	fmt.Println("Hello, World!", getAround())

@@ -55,13 +55,13 @@ func alphabeta(game Searchable, depth int, verbose bool, last *BestMove) *BestMo
 		return &BestMove{eval: game.evaluate(), quant:1}
 	}
 	var ret *BestMove
-	var fun func(r1 *BestMove, r2 *BestMove) *BestMove
+	var fun func(r1 *BestMove, r2 *BestMove) bool
 	if game.positiveTurn(){
 		ret=&BestMove{eval:-INF, quant:0}
-		fun = func(r1 *BestMove, r2 *BestMove)*BestMove{if r1.eval>=r2.eval{return r1}else{return r2}}
+		fun = func(r1 *BestMove, r2 *BestMove)bool{return r1.eval>=r2.eval}
 	}else{
 		ret=&BestMove{eval:INF, quant:0}
-		fun = func(r1 *BestMove, r2 *BestMove)*BestMove{if r1.eval<=r2.eval{return r1}else{return r2}}
+		fun = func(r1 *BestMove, r2 *BestMove)bool{return r1.eval<=r2.eval}
 	}
 	for _, move := range game.getMoves(){
 		game.doMove(move)
@@ -70,14 +70,14 @@ func alphabeta(game Searchable, depth int, verbose bool, last *BestMove) *BestMo
 		if ret.quant!=0 {newlast=ret}
 		best := alphabeta(game, depth-1, verbose, newlast)
 		if verbose{fmt.Println("eval", best.eval)}
-		if last!=nil && fun(best, last).eval==best.eval{
+		if last!=nil && fun(best, last){
 			if verbose{fmt.Println("cut! undo", move.to)}
 			game.undoMove(move)
 			return best
 		}
 		best.bestmove=move
 		newquant := best.quant+ret.quant
-		ret=fun(ret, best)
+		if !fun(ret, best){ret=best}
 		ret.quant=newquant
 		game.undoMove(move)
 		if verbose {fmt.Println("undo", move.to)}
