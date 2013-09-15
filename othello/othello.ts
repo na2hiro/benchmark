@@ -6,6 +6,7 @@ class Othello /*implements Searchable*/ {
 	private board: Color[][];
 	private around = [1,0,-1].map(x=>[1,0,-1].map(y=>[x,y])).reduce((prev, cur)=>prev.concat(cur), []).filter(xy=>xy[0]!=0||xy[1]!=0);
 	private ply: number;
+	private counts: number[];
 	
 	initialize() {
 		this.board = [];
@@ -19,6 +20,7 @@ class Othello /*implements Searchable*/ {
 		this.board[3][4] = this.board[4][3] = Color.Black;
 		this.board[3][3] = this.board[4][4] = Color.White;
 		this.ply=0;
+		this.counts=[2,2];
 	}
 	canPut(i: number, j: number, c: Color): number[][]{
 		if (this.board[i][j] != null) return [];
@@ -75,6 +77,8 @@ class Othello /*implements Searchable*/ {
 		var color=this.getTurnColor();
 		this.board[move.to[0]][move.to[1]]=color;
 		move.change.forEach(xy=>this.board[xy[0]][xy[1]]=color);
+		this.counts[color]+=move.change.length+1;
+		this.counts[1-color]-=move.change.length;
 		this.ply++;
 //		console.log(this.toString());
 	}
@@ -83,6 +87,8 @@ class Othello /*implements Searchable*/ {
 		var color=this.getTurnColor();
 		this.board[move.to[0]][move.to[1]]=null;
 		move.change.forEach(xy=>this.board[xy[0]][xy[1]]=color);
+		this.counts[1-color]-=move.change.length+1;
+		this.counts[color]+=move.change.length;
 		this.ply--;
 	}
 	getTurnColor(): Color{
@@ -101,15 +107,8 @@ class Othello /*implements Searchable*/ {
 		}
 		return ret;
 	}
-	count(){
-		var ret=[0,0]
-		this.board.forEach(xs=>{
-			xs.forEach(x=>{if(x!=null) ret[x]++});
-		});
-		return ret;
-	}
 	evaluate(): number{
-		var c = this.count();
+		var c = this.counts;
 		return c[0]-c[1];
 	}
 }
