@@ -33,23 +33,18 @@ class Othello /*implements Searchable*/ {
 			if (!this.onBoard(nowx, nowy) || this.board[nowx][nowy] === null || this.board[nowx][nowy] == c) return;
 			// teki
 			rets.push([nowx, nowy]);
-//			console.log("仮: 敵", [nowx, nowy])
 			while(true) {
 				nowx += xy[0];
 				nowy += xy[1];
-//				console.log(nowx, nowy);
 				if (!this.onBoard(nowx, nowy) || this.board[nowx][nowy] == null) {
-//					console.log("outof");
 					return;
 				}
 				if (this.board[nowx][nowy] == c) {
 					//mikata
-//					console.log("mikata");
 					ret = ret.concat(rets);
 					return;
 				} else {
 					//teki keizoku
-//					console.log("teki");
 					rets.push([nowx, nowy]);
 				}
 			}
@@ -70,25 +65,27 @@ class Othello /*implements Searchable*/ {
 				}
 			}
 		}
+		if(ret.length==0)ret.push({to: null, change:[]});
 		return ret;
 	}
 	doMove(move: Search.Move){
-//		console.log("do", move.to);
-		var color=this.getTurnColor();
-		this.board[move.to[0]][move.to[1]]=color;
-		move.change.forEach(xy=>this.board[xy[0]][xy[1]]=color);
-		this.counts[color]+=move.change.length+1;
-		this.counts[1-color]-=move.change.length;
+		if(move.to!=null){
+			var color=this.getTurnColor();
+			this.board[move.to[0]][move.to[1]]=color;
+			move.change.forEach(xy=>this.board[xy[0]][xy[1]]=color);
+			this.counts[color]+=move.change.length+1;
+			this.counts[1-color]-=move.change.length;
+		}
 		this.ply++;
-//		console.log(this.toString());
 	}
 	undoMove(move: Search.Move){
-//		console.log("undo", move.to);
-		var color=this.getTurnColor();
-		this.board[move.to[0]][move.to[1]]=null;
-		move.change.forEach(xy=>this.board[xy[0]][xy[1]]=color);
-		this.counts[1-color]-=move.change.length+1;
-		this.counts[color]+=move.change.length;
+		if(move.to!=null){
+			var color=this.getTurnColor();
+			this.board[move.to[0]][move.to[1]]=null;
+			move.change.forEach(xy=>this.board[xy[0]][xy[1]]=color);
+			this.counts[1-color]-=move.change.length+1;
+			this.counts[color]+=move.change.length;
+		}
 		this.ply--;
 	}
 	getTurnColor(): Color{
@@ -109,7 +106,15 @@ class Othello /*implements Searchable*/ {
 	}
 	evaluate(): number{
 		var c = this.counts;
-		return c[0]-c[1];
+		if(this.gameEnd()) return (c[0]-c[1])*100;
+		return c[0]-c[1]
+			+(this.board[0][0]==Color.Black?6:(this.board[0][0]==Color.White?-6:0))
+			+(this.board[0][7]==Color.Black?6:(this.board[0][7]==Color.White?-6:0))
+			+(this.board[7][0]==Color.Black?6:(this.board[7][0]==Color.White?-6:0))
+			+(this.board[7][7]==Color.Black?6:(this.board[7][7]==Color.White?-6:0));
+	}
+	gameEnd(){
+		return this.counts[0]+this.counts[1]==64;
 	}
 }
 
@@ -125,6 +130,24 @@ console.log(o.toString(), o.count(), o.evaluate());
 o.undoMove(moves[0]);
 console.log(o.toString());
 */
-o.doMove(o.getMoves()[0]);
+//o.doMove(o.getMoves()[0]);
 console.log(o.toString());
-console.log(Search.minimax(o, 3));
+/*
+for(var i=7; i<=9; i++){
+	var depth = i;
+	console.log("********** depth = "+i+" **********");
+	console.time("minimax");
+	console.log(Search.minimax(o, depth, false));
+	console.timeEnd("minimax");
+	console.time("alphabeta");
+	console.log(Search.alphabeta(o, depth, false));
+	console.timeEnd("alphabeta");
+}*/
+var depth=7;
+for(var i=0; i<70; i++){
+	var best=Search.alphabeta(o, depth, false);
+	o.doMove(best.bestmove);
+	console.log(best);
+	console.log(o.toString());
+	if(o.gameEnd())break;
+}
