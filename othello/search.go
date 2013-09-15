@@ -13,8 +13,8 @@ type Searchable interface{
 }
 
 type Move struct{
-	to []int
-	change [][]int
+	to []int8
+	change [][]int8
 }
 
 type BestMove struct{

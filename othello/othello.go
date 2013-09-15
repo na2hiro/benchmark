@@ -4,11 +4,11 @@ import fmt "fmt"
 const(
 	Black = 0
 	White = 1
-	BLANK = -1
+	BLANK = 2
 )
 
-func getAround()[8][2]int{
-	return [8][2]int{{1,1},{1,0},{1,-1},{0,1},{0,-1},{-1,1},{-1,0},{-1,-1}} 
+func getAround()[8][2]int8{
+	return [8][2]int8{{1,1},{1,0},{1,-1},{0,1},{0,-1},{-1,1},{-1,0},{-1,-1}} 
 }
 func main(){
 	fmt.Println("Hello, World!", getAround())
@@ -33,7 +33,7 @@ func main(){
 
 
 type Othello struct{
-	board [8][8]int
+	board [8][8]int8
 	ply int
 	counts [2]int
 }
@@ -50,19 +50,19 @@ func (this *Othello) initialize(){
 	this.counts=[2]int{2,2}
 }
 
-func onBoard(i int, j int)bool{
+func onBoard(i int8, j int8)bool{
 	return 0 <= i && i < 8 && 0 <= j && j < 8
 }
 
-func (this *Othello) canPut(i int, j int, c int) [][]int{
-	if this.board[i][j]!=BLANK {return [][]int{}};
-	ret := [][]int{}
+func (this *Othello) canPut(i int8, j int8, c int8) [][]int8{
+	if this.board[i][j]!=BLANK {return [][]int8{}};
+	ret := make([][]int8, 0)
 	for _, xy := range getAround(){
 		nowx := i+xy[0]
 		nowy := j+xy[1]
-		rets := [][]int{}
+		rets := [][]int8{}
 		if !onBoard(nowx, nowy)||this.board[nowx][nowy]==BLANK||this.board[nowx][nowy]==c {continue}
-		rets=append(rets, []int{nowx, nowy})
+		rets=append(rets, []int8{nowx, nowy})
 		for true{
 			nowx+=xy[0]
 			nowy+=xy[1]
@@ -71,7 +71,7 @@ func (this *Othello) canPut(i int, j int, c int) [][]int{
 				ret=append(ret, rets...)
 				break;
 			}else{
-				rets=append(rets, []int{nowx, nowy})
+				rets=append(rets, []int8{nowx, nowy})
 			}
 		}
 	}
@@ -80,23 +80,24 @@ func (this *Othello) canPut(i int, j int, c int) [][]int{
 func (this *Othello) positiveTurn() bool{
 	return this.ply%2==0
 }
-func (this *Othello) getTurnColor() int{
+func (this *Othello) getTurnColor() int8{
 	if this.positiveTurn(){return Black}
 	return White
 }
 func (this *Othello) getMoves() []Move{
 	ret := []Move{}
 	color := this.getTurnColor()
-	for i:=0; i<8; i++{
-		for j:=0; j<8; j++{
+	var i, j int8
+	for i=0; i<8; i++{
+		for j=0; j<8; j++{
 			xys := this.canPut(i, j, color)
 			if len(xys)>0{
-				ret=append(ret, Move{to:[]int{i, j}, change: xys})
+				ret=append(ret, Move{to:[]int8{i, j}, change: xys})
 			}
 		}
 	}
 	if len(ret)==0{
-		ret=append(ret, Move{change:[][]int{}})
+		ret=append(ret, Move{change:[][]int8{}})
 	}
 	return ret
 }
