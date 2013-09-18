@@ -5,11 +5,16 @@ export interface Searchable {
 	evaluate(): number;
 	positiveTurn(): boolean;
 }
-
-export interface Move {
-	to: number[];
-	change: number[][];
+export interface Coord{
+	x: number;
+	y: number;
 }
+export interface Move {
+	to: Coord;
+	change: Coord[];
+}
+
+
 export interface BestMove{
 	bestmove: Move;
 	eval: number;

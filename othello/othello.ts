@@ -4,7 +4,10 @@ import Search = require("../search");
 enum Color { Black=0, White=1 }
 class Othello implements Search.Searchable {
 	private board: Color[][];
-	private around = [1,0,-1].map(x=>[1,0,-1].map(y=>[x,y])).reduce((prev, cur)=>prev.concat(cur), []).filter(xy=>xy[0]!=0||xy[1]!=0);
+	private around = [1,0,-1]
+		.map(x=>[1,0,-1].map(y=>({"x":x,"y":y})))
+		.reduce((prev, cur)=>prev.concat(cur), [])
+		.filter(xy=>xy.x!=0||xy.y!=0);
 	private ply: number;
 	private counts: number[];
 	
@@ -22,20 +25,20 @@ class Othello implements Search.Searchable {
 		this.ply=0;
 		this.counts=[2,2];
 	}
-	canPut(i: number, j: number, c: Color): number[][]{
+	canPut(i: number, j: number, c: Color): Search.Coord[]{
 		if (this.board[i][j] != null) return [];
-		var ret: number[][]=[];
+		var ret: Search.Coord[]=[];
 		this.around.forEach(xy=> {
-			var nowx = i + xy[0];
-			var nowy = j + xy[1];
-			var rets:number[][] = [];
+			var nowx = i + xy.x;
+			var nowy = j + xy.y;
+			var rets:Search.Coord[] = [];
 
 			if (!this.onBoard(nowx, nowy) || this.board[nowx][nowy] != 1-c) return;
 			// teki
-			rets.push([nowx, nowy]);
+			rets.push({x:nowx, y:nowy});
 			while(true) {
-				nowx += xy[0];
-				nowy += xy[1];
+				nowx += xy.x;
+				nowy += xy.y;
 				if (!this.onBoard(nowx, nowy) || this.board[nowx][nowy] == null) {
 					return;
 				}
@@ -45,7 +48,7 @@ class Othello implements Search.Searchable {
 					return;
 				} else {
 					//teki keizoku
-					rets.push([nowx, nowy]);
+					rets.push({x:nowx, y:nowy});
 				}
 			}
 		});
@@ -61,7 +64,7 @@ class Othello implements Search.Searchable {
 			for (var j = 0; j < 8; j++) {
 				var xys = this.canPut(i, j, color);
 				if(xys.length>0){
-					ret.push({to: [i, j], change: xys});
+					ret.push({to: {x:i, y:j}, change: xys});
 				}
 			}
 		}
@@ -71,8 +74,8 @@ class Othello implements Search.Searchable {
 	doMove(move: Search.Move){
 		if(move.to!=null){
 			var color=this.getTurnColor();
-			this.board[move.to[0]][move.to[1]]=color;
-			move.change.forEach(xy=>this.board[xy[0]][xy[1]]=color);
+			this.board[move.to.x][move.to.y]=color;
+			move.change.forEach(xy=>this.board[xy.x][xy.y]=color);
 			this.counts[color]+=move.change.length+1;
 			this.counts[1-color]-=move.change.length;
 		}
@@ -81,8 +84,8 @@ class Othello implements Search.Searchable {
 	undoMove(move: Search.Move){
 		if(move.to!=null){
 			var color=this.getTurnColor();
-			this.board[move.to[0]][move.to[1]]=null;
-			move.change.forEach(xy=>this.board[xy[0]][xy[1]]=color);
+			this.board[move.to.x][move.to.y]=null;
+			move.change.forEach(xy=>this.board[xy.x][xy.y]=color);
 			this.counts[1-color]-=move.change.length+1;
 			this.counts[color]+=move.change.length;
 		}
@@ -120,16 +123,17 @@ class Othello implements Search.Searchable {
 
 var o = new Othello();
 o.initialize();
-/*console.log(o.canPut(2,2, Color.Black));
+console.log(o.canPut(2,2, Color.Black));
 console.log(o.canPut(2,3, Color.Black));
 console.log(o.canPut(2,4, Color.Black));
 var moves = o.getMoves();
-console.log(o.toString(), o.count(), o.evaluate());
+console.log(o.toString(), o.evaluate());
+console.log("moves", moves);
 o.doMove(moves[0]);
-console.log(o.toString(), o.count(), o.evaluate());
+console.log(o.toString(), o.evaluate());
 o.undoMove(moves[0]);
 console.log(o.toString());
-*/
+
 //o.doMove(o.getMoves()[0]);
 console.log(o.toString());
 
