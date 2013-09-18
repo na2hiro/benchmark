@@ -18,9 +18,9 @@ func main(){
 	m := o.getMoves()[0]
 	o.doMove(m)
 	fmt.Println(o.toString())
-*//*
+*/
 	fmt.Println(alphabeta(&o, 10, false, nil))
-	*/
+/*	
 	for i:=0; i<70; i++{
 		best:=alphabeta(&o, 7, false, nil)
 		o.doMove(best.bestmove)
@@ -28,6 +28,7 @@ func main(){
 		fmt.Println(o.toString())
 		if o.gameEnd() {break}
 	}
+*/
 }
 
 type Coord struct{

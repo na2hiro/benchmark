@@ -2,7 +2,7 @@
 import Search = require("../search");
 
 enum Color { Black=0, White=1 }
-class Othello /*implements Searchable*/ {
+class Othello implements Search.Searchable {
 	private board: Color[][];
 	private around = [1,0,-1].map(x=>[1,0,-1].map(y=>[x,y])).reduce((prev, cur)=>prev.concat(cur), []).filter(xy=>xy[0]!=0||xy[1]!=0);
 	private ply: number;
@@ -30,7 +30,7 @@ class Othello /*implements Searchable*/ {
 			var nowy = j + xy[1];
 			var rets:number[][] = [];
 
-			if (!this.onBoard(nowx, nowy) || this.board[nowx][nowy] === null || this.board[nowx][nowy] == c) return;
+			if (!this.onBoard(nowx, nowy) || this.board[nowx][nowy] != 1-c) return;
 			// teki
 			rets.push([nowx, nowy]);
 			while(true) {
@@ -108,11 +108,11 @@ class Othello /*implements Searchable*/ {
 		var c = this.counts;
 		if(this.gameEnd()) return (c[0]-c[1])*100;
 		return c[0]-c[1]
-			+(this.board[0][0]==Color.Black?6:(this.board[0][0]==Color.White?-6:0))
+	/*		+(this.board[0][0]==Color.Black?6:(this.board[0][0]==Color.White?-6:0))
 			+(this.board[0][7]==Color.Black?6:(this.board[0][7]==Color.White?-6:0))
 			+(this.board[7][0]==Color.Black?6:(this.board[7][0]==Color.White?-6:0))
 			+(this.board[7][7]==Color.Black?6:(this.board[7][7]==Color.White?-6:0));
-	}
+	*/}
 	gameEnd(){
 		return this.counts[0]+this.counts[1]==64;
 	}
@@ -132,17 +132,17 @@ console.log(o.toString());
 */
 //o.doMove(o.getMoves()[0]);
 console.log(o.toString());
-/*
-for(var i=7; i<=9; i++){
+
+for(var i=10; i<=10; i++){
 	var depth = i;
 	console.log("********** depth = "+i+" **********");
-	console.time("minimax");
-	console.log(Search.minimax(o, depth, false));
-	console.timeEnd("minimax");
+//	console.time("minimax");
+//	console.log(Search.minimax(o, depth, false));
+//	console.timeEnd("minimax");
 	console.time("alphabeta");
 	console.log(Search.alphabeta(o, depth, false));
 	console.timeEnd("alphabeta");
-}*/
+}/*/
 var depth=7;
 for(var i=0; i<70; i++){
 	var best=Search.alphabeta(o, depth, false);
@@ -150,4 +150,4 @@ for(var i=0; i<70; i++){
 	console.log(best);
 	console.log(o.toString());
 	if(o.gameEnd())break;
-}
+}*/
