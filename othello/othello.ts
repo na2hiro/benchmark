@@ -71,13 +71,24 @@ class Othello implements Search.Searchable {
 		if(ret.length==0)ret.push({to: null, change:[]});
 		return ret;
 	}
+	addCount(c: Color, n1: number, n2: number){
+		switch(c){
+			case Color.Black:
+				this.counts[0]+=n1;
+				this.counts[1]+=n2;
+				return;
+			case Color.White:
+				this.counts[1]+=n1;
+				this.counts[0]+=n2;
+				return;
+		}
+	}
 	doMove(move: Search.Move){
 		if(move.to!=null){
 			var color=this.getTurnColor();
 			this.board[move.to.x][move.to.y]=color;
 			move.change.forEach(xy=>this.board[xy.x][xy.y]=color);
-			this.counts[color]+=move.change.length+1;
-			this.counts[1-color]-=move.change.length;
+			this.addCount(color, move.change.length+1, -move.change.length);
 		}
 		this.ply++;
 	}
@@ -86,8 +97,7 @@ class Othello implements Search.Searchable {
 			var color=this.getTurnColor();
 			this.board[move.to.x][move.to.y]=null;
 			move.change.forEach(xy=>this.board[xy.x][xy.y]=color);
-			this.counts[1-color]-=move.change.length+1;
-			this.counts[color]+=move.change.length;
+			this.addCount(color, move.change.length, -move.change.length-1);
 		}
 		this.ply--;
 	}

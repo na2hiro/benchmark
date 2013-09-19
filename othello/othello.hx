@@ -82,11 +82,11 @@ class Othello implements Searchable{
 	function addCount(c: Color, n1: Int, n2: Int){
 		switch(c){
 			case Black:
-				this.counts[0] = n1;
-				this.counts[1] = n2;
+				this.counts[0] += n1;
+				this.counts[1] += n2;
 			case White:
-				this.counts[1] = n1;
-				this.counts[0] = n2;
+				this.counts[1] += n1;
+				this.counts[0] += n2;
 		}
 	}
 	public function doMove(move: Move): Void{
@@ -109,7 +109,7 @@ class Othello implements Searchable{
 				var xy=move.change[i];
 				this.board[xy.x][xy.y]=color;
 			}
-			this.addCount(color, move.change.length, -move.change.length+1);
+			this.addCount(color, move.change.length, -move.change.length-1);
 		}
 		this.ply--;
 	}
@@ -149,15 +149,23 @@ class Othello implements Searchable{
 		var o = new Othello();
 		o.initialize();
 		/*
-		trace(o.toString());
+		trace(o.evaluate(), o.toString());
 		var moves = o.getMoves();
 		trace(moves);
 		o.doMove(moves[0]);
-		trace(o.toString());
+		trace(o.evaluate(), o.toString());
+		var moves2 = o.getMoves();
+		trace(moves2);
+		o.doMove(moves2[0]);
+		trace(o.evaluate(), o.toString());
 		o.undoMove(moves[0]);
 		trace(o.toString());
 		*/
-		trace(Search.alphabeta(o, 10, false, null));
+		trace(o.evaluate());
+		for(depth in 10...11){
+			trace(Search.alphabeta(o, depth, false, null));
+		}
+		trace(o.evaluate());
 	}
 }
 
