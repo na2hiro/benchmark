@@ -49,25 +49,45 @@ canPut (x,y) color board = concat$ do
   where enemy = inv color
         f c = onBoard c && board!c == Just enemy
 
-getMoves :: Color->Board->[Move]
-getMoves color board = if null ret then [Pass] else ret
-    where ret = do
+getMoves :: Othello->[Move]
+getMoves o@(Othello board _ _) = if null ret then [Pass] else ret
+    where color = turnColor o
+          ret = do
                   x<-[0..7]
                   y<-[0..7]
                   let canput = canPut (x,y) color board
-                      if canput==[] then [] else [Move (x,y) canput]
+                  if canput==[] then [] else [Move (x,y) canput]
 
 turnColor :: Othello->Color
 turnColor (Othello _ ply _) = if rem ply 2==0 then Black else White
 
 doMove :: Move->Othello->Othello
 doMove Pass (Othello board p c) = Othello board (p+1) c
-doMove (Move put@(x,y) changes) o@(Othello board p c) = (Othello newboard (p+1) c)
+doMove (Move put@(x,y) changes) o@(Othello board p (cb,cw)) = (Othello newboard (p+1) newc)
   where color=turnColor o
         newboard = board // zip (put:changes) (repeat$ Just color)
+        len = length changes;
+        newc = if color==Black
+                 then (cb+len+1, cw-len)
+                 else (cb-len, cw+len+1)
 
 evaluate :: Othello->Int
 evaluate o@(Othello _ _ (cb,cw)) = (if gameEnd o then 100 else 1)*(cb-cw)
 
 gameEnd :: Othello->Bool
 gameEnd (Othello _ _ (cb,cw)) = cb+cw==64
+
+data BestMove = BestMove Move Int Int deriving(Show)
+
+minimax :: Int->Othello->BestMove
+minimax 0 game = BestMove Pass (evaluate game) 1
+minimax depth game = foldr (f op) (BestMove Pass initEval 0) bms
+    where (op, initEval) = if turnColor game==Black then ((>=), minBound) else ((<=), maxBound)
+          bms = do
+                  move<-getMoves game
+                  let next = doMove move game
+                  let (BestMove bmove beval bquant) = minimax (depth-1) next
+                  return$ BestMove move beval bquant
+          f op (BestMove mv1 ev1 q1) (BestMove mv2 ev2 q2) = if ev1 `op` ev2 
+                                                               then BestMove mv1 ev1 (q1+q2)
+                                                               else BestMove mv2 ev2 (q1+q2)
