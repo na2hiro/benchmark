@@ -1,21 +1,23 @@
 import Debug.Trace(trace)
+import Data.Array
 
 data Color = Black | White deriving(Show, Eq)
 
 type Coord = (Int,Int) 
 
-type Board = [[Maybe Color]]
+type Board = Array Coord (Maybe Color)
 type Ply = Int
-data Othello = Othello {getBoard:: Board, getPly:: Ply} deriving(Show)
+type Counts = (Int,Int)
+data Othello = Othello Board Ply Counts deriving(Show)
 data Move = Move Coord [Coord] deriving(Show)
 
+size :: (Coord,Coord)
+size = ((0,0),(7,7))
 initialBoard :: Board
-initialBoard = no3++surroundNo3 [Just White,Just Black]:surroundNo3 [Just Black,Just White]:no3
-  where surroundNo3 x = replicate 3 Nothing ++ x ++ replicate 3 Nothing
-        no3 = replicate 3 (replicate 8 Nothing)
+initialBoard = array size (zip (range size)$ repeat Nothing) // [((3,3),Just White),((4,4),Just White),((3,4),Just Black),((4,3),Just Black)]
 
 initialOthello :: Othello
-initialOthello= Othello {getBoard=initialBoard, getPly=0}
+initialOthello= Othello initialBoard 0 (2,2)
 
 inv :: Color->Color
 inv Black = White
@@ -31,10 +33,10 @@ canPut :: Coord->Color->Board->[Coord]
 canPut (x,y) color board = concat$ do
     (vi,vj)<-around
     let tak = span f$ tail$ iterate (\(i,j)->(i+vi,j+vj)) (x,y)
-    let dest@(nx,ny) = head (snd tak)
-    return$ if onBoard dest && (board!!nx!!ny)==Just color then fst tak else []
+    let dest = head (snd tak)
+    return$ if onBoard dest && (board!dest)==Just color then fst tak else []
   where enemy = inv color
-        f c@(x,y) = onBoard c && (board!!x!!y)==Just enemy
+        f c = onBoard c && board!c == Just enemy
 
 getMoves :: Color->Board->[Move]
 getMoves color board = do
