@@ -41,11 +41,11 @@ onBoard :: Coord->Bool
 onBoard (i,j) = 0<=i && i<8 && 0<=j && j<8
 
 canPut :: Coord->Color->Board->[Coord]
-canPut (x,y) color board = concat$ do
+canPut dest@(x,y) color board = if board!dest/=Nothing then [] else concat$ do
     (vi,vj)<-around
     let tak = span f$ tail$ iterate (\(i,j)->(i+vi,j+vj)) (x,y)
-    let dest = head (snd tak)
-    return$ if onBoard dest && (board!dest)==Just color then fst tak else []
+    let other = head (snd tak)
+    return$ if onBoard other && (board!other)==Just color then fst tak else []
   where enemy = inv color
         f c = onBoard c && board!c == Just enemy
 
