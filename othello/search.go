@@ -68,6 +68,7 @@ func alphabeta(game Searchable, depth uint8, verbose bool, last *BestMove) *Best
 			if verbose{fmt.Println("eval", best.eval)}
 			if last!=nil && f1(best, last){
 				if verbose{fmt.Println("cut! undo", move.to)}
+				best.quant += ret.quant
 				game.undoMove(move)
 				return best
 			}
@@ -89,6 +90,7 @@ func alphabeta(game Searchable, depth uint8, verbose bool, last *BestMove) *Best
 			if verbose{fmt.Println("eval", best.eval)}
 			if last!=nil && f2(best, last){
 				if verbose{fmt.Println("cut! undo", move.to)}
+				best.quant += ret.quant
 				game.undoMove(move)
 				return best
 			}

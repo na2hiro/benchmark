@@ -233,6 +233,7 @@ class Search{
 			if(verbose) trace("eval", best.eval);
 			if(last!=null && func(best, last).eval==best.eval){
 				game.undoMove(move);
+				best.quant+=ret.quant;
 				if(verbose) trace("cut! undo", move.to);
 				return best;
 			}

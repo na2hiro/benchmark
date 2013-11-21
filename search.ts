@@ -67,6 +67,7 @@ export function alphabeta(game: Searchable, depth: number, verbose=false, last: 
 		if(verbose) console.log("eval",best.eval);
 		if(last!=null && better(best, last).eval==best.eval){
 			if(verbose)console.log("cut! undo", move.to);
+			best.quant+=ret.quant;
 			game.undoMove(move);
 			return best;
 		}

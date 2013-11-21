@@ -48,6 +48,7 @@ function alphabeta(Searchable $game, $depth, $verbose=false, $last=null){
 			$a=$func($best, $last);
 			if($a["eval"]===$best["eval"]){
 				if($verbose) {echo "cut! undo", $move["to"][0], $move["to"][1], "\n";}
+				$best["quant"]+=$ret["quant"];
 				$game->undoMove($move);
 				return $best;
 			}
