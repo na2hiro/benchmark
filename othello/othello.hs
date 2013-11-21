@@ -112,4 +112,4 @@ alphabeta depth last game = either id id$ foldl (flip f) (Right (BestMove Pass i
                                                                  then BestMove mv1 ev1 (q1+q2)
                                                                  else BestMove mv2 ev2 (q1+q2)
 
-main = print$ alphabeta 9 Nothing initialOthello
+main = print$ alphabeta 10 Nothing initialOthello
