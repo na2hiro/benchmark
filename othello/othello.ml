@@ -10,9 +10,18 @@ let rec span f =
             x::ys,zs
     | xs -> 
             [],xs
+let id x = x
+type ('a, 'b) either = Left of 'a | Right of 'b
+type 'a option = None | Some of 'a
+let opt n f mb = match mb with
+| None -> n
+| Some x->f x
+let eith f g ei = match ei with
+| Left x -> f x
+| Right y -> g y
 
 type color = Black | White
-type piece = None | Some of color
+type piece = color option
 
 type coord = int * int
 type count = int * int
@@ -132,6 +141,30 @@ let rec minimax n game = match n with
             BestMove(move, beval, bquant) in
         let bms = map g (getMoves game) in 
         fold_right (f op) bms (BestMove (Pass, initEval, 0))
+
+let rec alphabeta n last game = match n with
+| 0 -> BestMove (Pass, (evaluate game), 1)
+| depth ->
+        let (op, initEval) = if turnColor game==Black
+            then ((>=), -999999) else ((<=), 999999) in
+        let better (BestMove(mv1, ev1, q1)) (BestMove (mv2,ev2,q2)) = if op ev1 ev2
+            then BestMove(mv1, ev1, q1+q2) else BestMove(mv2, ev2, q1+q2) in
+        let f bes move = match bes with
+        | (Left _) as l -> l
+        | (Right ret) ->
+                doMove move game;
+                let (BestMove (bmove, beval, bquant)) = alphabeta (depth-1)
+                (Some ret) game in
+                undoMove move game;
+                let newbest = BestMove (move, beval, bquant) in
+                let betterOne = better newbest ret in
+                let sameEval (BestMove (_,e1,_))(BestMove (_,e2,_))=e1==e2 in
+                let cut = opt false (fun l->sameEval (better newbest l) newbest)
+                last in
+                if cut then Left betterOne else Right betterOne in
+        eith id id (fold_left f (Right (BestMove (Pass, initEval, 0))) (getMoves
+        game))
+
 
 let _ = 
     let o = initialOthello in 
