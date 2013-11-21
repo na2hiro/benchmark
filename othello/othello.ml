@@ -81,7 +81,7 @@ let getMoves o =
     if length ret==0 then [Pass] else ret
 
 let doMove move o = match move with
-| Pass -> o.ply<-o.ply+1; o
+| Pass -> o.ply<-o.ply+1
 | Move (put, changes) ->
         let color = turnColor o in
         let len = length changes in
@@ -91,10 +91,9 @@ let doMove move o = match move with
             then (cb+len+1, cw-len) 
             else (cb-len, cw+len+1) in
         o.ply<-o.ply+1;
-        o.count<-newc;
-        o
+        o.count<-newc
 let undoMove move o = match move with
-| Pass -> o.ply<-o.ply-1;o
+| Pass -> o.ply<-o.ply-1
 | Move (put, changes) ->
         let color = turnColor o in
         let len = length changes in
@@ -105,8 +104,8 @@ let undoMove move o = match move with
             then (cb+len, cw-len-1) 
             else (cb-len-1, cw+len) in
         o.ply<-o.ply-1;
-        o.count<-newc;
-        o
+        o.count<-newc
+        
 
 let printO othello = Printf.printf "%s\n" (showOthello othello)
 let printM move = Printf.printf "%s\n" (showMove move)
@@ -117,8 +116,8 @@ let evaluate o = let (cb,cw)=o.count in
 
 type eval = int
 type bestmove = BestMove of move * eval * int
-(*
-let minimax n game = match n with
+
+let rec minimax n game = match n with
 | 0 -> BestMove (Pass, (evaluate game), 1)
 | depth ->
         let f op (BestMove (mv1, ev1, q1)) (BestMove (mv2, ev2, q2)) =
@@ -127,21 +126,22 @@ let minimax n game = match n with
         let (op, initEval) = if turnColor game==Black
             then ((>=), -999999) else ((<=), 999999) in
         let g move =
-            let next = doMove move game in
-            let BestMove(bmove, beval, bquant) = minimax (depth-1) next in
-            undoMove
+            doMove move game;
+            let BestMove(bmove, beval, bquant) = minimax (depth-1) game in
+            undoMove move game;
+            BestMove(move, beval, bquant) in
         let bms = map g (getMoves game) in 
-    *)
+        fold_right (f op) bms (BestMove (Pass, initEval, 0))
 
 let _ = 
-    let ini = initialOthello in 
-    printO ini;
-    let moves = getMoves initialOthello in
+    let o = initialOthello in 
+    printO o;
+    let moves = getMoves o in
     printM (hd moves);
-    let o1 = doMove (hd moves) ini in
-    printO o1;
-    let o0 = undoMove (hd moves) o1 in 
-    printO o0
+    doMove (hd moves) o;
+    printO o;
+    undoMove (hd moves) o;
+    printO o
 
 
 
