@@ -1,4 +1,4 @@
-import Data.Array
+import Data.Vector as V ((//), (!), replicate, Vector)
 import Data.List(intercalate)
 
 data Color = Black | White deriving(Eq)
@@ -8,7 +8,7 @@ instance Show Color where
 
 type Coord = (Int,Int) 
 
-type Board = Array Coord (Maybe Color)
+type Board = Vector (Maybe Color)
 type Ply = Int
 type Counts = (Int,Int)
 data Othello = Othello Board Ply Counts
@@ -17,16 +17,18 @@ data Move = Move Coord [Coord] | Pass deriving(Show)
 instance Show Othello where
     show (Othello board ply counts)=showBoard board++"\nply:"++show ply++",counts:"++show counts
 
+toI (x,y) = x+y*9
+
 size :: (Coord,Coord)
 size = ((0,0),(7,7))
 initialBoard :: Board
-initialBoard = array size (zip (range size)$ repeat Nothing) // [((3,3),Just White),((4,4),Just White),((3,4),Just Black),((4,3),Just Black)]
+initialBoard = V.replicate 81 Nothing // [(toI(3,3),Just White),(toI(4,4),Just White),(toI(3,4),Just Black),(toI(4,3),Just Black)]
 
 initialOthello :: Othello
 initialOthello= Othello initialBoard 0 (2,2)
 
 showBoard :: Board->String
-showBoard b = Data.List.intercalate"\n"[concat[maybe "." show (b!(x,y))|y<-range (y1,y2)]|x<-range (x1,x2)]
+showBoard b = Data.List.intercalate"\n"[concat[maybe "." show (b!toI(x,y))|y<-[y1..y2]]|x<-[x1..x2]]
     where ((x1,y1),(x2,y2))=size
 
 inv :: Color->Color
@@ -40,13 +42,13 @@ onBoard :: Coord->Bool
 onBoard (i,j) = 0<=i && i<8 && 0<=j && j<8
 
 canPut :: Coord->Color->Board->[Coord]
-canPut dest@(x,y) color board = if board!dest/=Nothing then [] else concat$ do
+canPut dest@(x,y) color board = if board!toI dest/=Nothing then [] else concat$ do
     (vi,vj)<-around
     let tak = span f$ tail$ iterate (\(i,j)->(i+vi,j+vj)) (x,y)
     let other = head (snd tak)
-    return$ if onBoard other && (board!other)==Just color then fst tak else []
+    return$ if onBoard other && (board!toI other)==Just color then fst tak else []
   where enemy = inv color
-        f c = onBoard c && board!c == Just enemy
+        f c = onBoard c && board!toI c == Just enemy
 
 getMoves :: Othello->[Move]
 getMoves o@(Othello board _ _) = if null ret then [Pass] else ret
@@ -64,7 +66,7 @@ doMove :: Move->Othello->Othello
 doMove Pass (Othello board p c) = Othello board (p+1) c
 doMove (Move put@(x,y) changes) o@(Othello board p (cb,cw)) = (Othello newboard (p+1) newc)
   where color=turnColor o
-        newboard = board // zip (put:changes) (repeat$ Just color)
+        newboard = board // zip (map toI (put:changes)) (repeat$ Just color)
         len = length changes;
         newc = if color==Black
                  then (cb+len+1, cw-len)
