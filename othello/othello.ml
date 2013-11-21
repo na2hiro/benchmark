@@ -116,15 +116,18 @@ let undoMove move o = match move with
         o.count<-newc
         
 
-let printO othello = Printf.printf "%s\n" (showOthello othello)
-let printM move = Printf.printf "%s\n" (showMove move)
-
 let gameEnd o = let (cb,cw)=o.count in cb+cw==64
 let evaluate o = let (cb,cw)=o.count in
     (if gameEnd o then 100 else 1)*(cb-cw)
 
 type eval = int
 type bestmove = BestMove of move * eval * int
+let showBestMove (BestMove (move, eval, quant)) = showMove move^","^string_of_int
+eval^","^string_of_int quant
+
+let printO othello = Printf.printf "%s\n" (showOthello othello)
+let printM move = Printf.printf "%s\n" (showMove move)
+let printBM bm = Printf.printf "%s\n" (showBestMove bm)
 
 let rec minimax n game = match n with
 | 0 -> BestMove (Pass, (evaluate game), 1)
@@ -166,15 +169,5 @@ let rec alphabeta n last game = match n with
         game))
 
 
-let _ = 
-    let o = initialOthello in 
-    printO o;
-    let moves = getMoves o in
-    printM (hd moves);
-    doMove (hd moves) o;
-    printO o;
-    undoMove (hd moves) o;
-    printO o
-
-
+let _ = printBM (alphabeta 10 None initialOthello)
 
