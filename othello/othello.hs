@@ -1,4 +1,3 @@
-import Debug.Trace(trace)
 import Data.Array
 import Data.List(intercalate)
 
@@ -94,15 +93,15 @@ minimax depth game = foldr (f op) (BestMove Pass initEval 0) bms
                                                                else BestMove mv2 ev2 (q1+q2)
 
 alphabeta :: Int->Maybe BestMove->Othello->BestMove
-alphabeta 0 _ game = trace ("eval"++show game++show (evaluate game))$ BestMove Pass (evaluate game) 1
+alphabeta 0 _ game = BestMove Pass (evaluate game) 1
 alphabeta depth last game = either id id$ foldl (flip f) (Right (BestMove Pass initEval 0)) moves
     where (op, initEval) = if turnColor game==Black then ((>=), minBound) else ((<=), maxBound)
           moves = getMoves game
           f :: Move->Either BestMove BestMove->Either BestMove BestMove
           f _ l@(Left b) = l
-          f move (Right ret) = if cut then trace "cut"$ Left betterOne else Right betterOne 
+          f move (Right ret) = if cut then Left betterOne else Right betterOne 
             where next = doMove move game
-                  best@(BestMove bmove beval bquant) = trace (show move)$ alphabeta (depth-1) (Just ret) next
+                  best@(BestMove bmove beval bquant) = alphabeta (depth-1) (Just ret) next
                   newbest = BestMove move beval bquant
                   betterOne = better newbest ret
                   cut = maybe False (\l->better newbest l`sameEval` newbest) last
@@ -110,3 +109,5 @@ alphabeta depth last game = either id id$ foldl (flip f) (Right (BestMove Pass i
           better (BestMove mv1 ev1 q1) (BestMove mv2 ev2 q2) = if ev1 `op` ev2 
                                                                  then BestMove mv1 ev1 (q1+q2)
                                                                  else BestMove mv2 ev2 (q1+q2)
+
+main = print$ alphabeta 9 Nothing initialOthello
