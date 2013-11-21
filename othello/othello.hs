@@ -11,7 +11,7 @@ type Coord = (Int,Int)
 type Board = Vector (Maybe Color)
 type Ply = Int
 type Counts = (Int,Int)
-data Othello = Othello Board Ply Counts
+data Othello = Othello !Board Ply Counts
 data Move = Move Coord [Coord] | Pass deriving(Show)
 
 instance Show Othello where
