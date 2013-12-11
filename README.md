@@ -4,27 +4,27 @@
 
 ## ベンチマーク一覧
 
-| 実行時間(s) | オセロ | fib(40)
+| 実行時間(s) | オセロ | fib(40) |
 | --- | ----: | -- |
-| Golang | 0.83 | 0.96
-| Haxe→JS | 1.2 |
-| Haxe→C++ | 2.8 |
-| OCaml | 3.3 | 0.63
-| Haskell | 4.5 | 1.5
-| TS→JS | 5.7 |
-| PHP | 38 | 61
-| C++ | | 0.34
-| C | | 0.35
-| Java | | 0.85
-| Kotlin | | 0.85
-| C# | | 1.2
-| JavaScript | | 1.6
-| Scheme | | 16
-| Ruby | | 23
-| Python | | 58
-| Lua | | 30
-| Prolog | | 48
-| Perl | | 136
+| Golang | 0.83 | 0.96 |
+| Haxe→JS | 1.2 | |
+| Haxe→C++ | 2.8 | |
+| OCaml | 3.3 | 0.63 |
+| Haskell | 4.5 | 1.5 |
+| TS→JS | 5.7 | |
+| PHP | 38 | 61 |
+| C++ | | 0.34 |
+| C | | 0.35 |
+| Java | | 0.85 |
+| Kotlin | | 0.85 |
+| C# | | 1.2 |
+| JavaScript | | 1.6 |
+| Scheme | | 16 |
+| Ruby | | 23 |
+| Python | | 58 |
+| Lua | | 30 |
+| Prolog | | 48 |
+| Perl | | 136 |
 
 
 ## プログラム一覧
