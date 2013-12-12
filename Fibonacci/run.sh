@@ -5,7 +5,7 @@ time ./out/fib_go
 time ./out/fib_hs
 time java -cp out fib
 time node fib.js
-time java -cp /Users/na2hiro/Downloads/kotlinc/lib/kotlin-runtime.jar:out fib
+time java -cp ~/src/kotlinc/lib/kotlin-runtime.jar:out fib
 time lua52 out/fib_lua
 time ./out/fib_ml
 time perl fib.perl
