@@ -6,25 +6,25 @@
 
 | 実行時間(s) | オセロ | fib(40) |
 | --- | ----: | ---: |
-| Golang | 0.83 | 0.96 |
-| Haxe→JS | 1.2 | |
-| Haxe→C++ | 2.8 | |
-| OCaml | 3.3 | 0.63 |
-| Haskell | 4.5 | 1.5 |
-| TS→JS | 5.7 | |
-| PHP | 38 | 61 |
 | C++ | | 0.34 |
 | C | | 0.35 |
+| Haxe→C++ | 2.8 | 0.47 |
+| OCaml | 3.3 | 0.63 |
 | Java | | 0.85 |
 | Kotlin | | 0.85 |
+| Golang | 0.83 | 0.96 |
 | C# | | 1.2 |
+| Haskell | 4.5 | 1.5 |
 | Ceylon→Java | | 1.5 |
 | JavaScript | | 1.6 |
+| Haxe→JS | 1.2 | 1.6 |
+| TS→JS | 5.7 | 1.6 |
 | Scheme | | 16 |
 | Ruby | | 23 |
 | Lua | | 30 |
 | Prolog | | 48 |
 | Python | | 58 |
+| PHP | 38 | 61 |
 | Perl | | 136 |
 | Ceylon→JS | | 660 |
 

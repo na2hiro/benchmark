@@ -15,3 +15,6 @@ ocamlopt -o out/fib_ml fib.ml
 
 
 ~/src/ceylon/bin/ceylon compile-js --source . default
+haxe fib_js.hxml 
+haxe fib_cpp.hxml 
+tsc --out fib_ts.js fib.ts
