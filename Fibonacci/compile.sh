@@ -14,3 +14,4 @@ ocamlopt -o out/fib_ml fib.ml
 
 
 
+~/src/ceylon/bin/ceylon compile-js --source . default

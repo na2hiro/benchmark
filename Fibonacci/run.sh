@@ -14,3 +14,4 @@ time php fib.php
 time python fib.py
 time ruby fib.rb
 time gosh fib.scm
+time ~/src/ceylon/bin/ceylon run-js --run main default

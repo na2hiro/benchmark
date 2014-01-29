@@ -18,13 +18,15 @@
 | Java | | 0.85 |
 | Kotlin | | 0.85 |
 | C# | | 1.2 |
+| Ceylon→Java | | 1.5 |
 | JavaScript | | 1.6 |
 | Scheme | | 16 |
 | Ruby | | 23 |
-| Python | | 58 |
 | Lua | | 30 |
 | Prolog | | 48 |
+| Python | | 58 |
 | Perl | | 136 |
+| Ceylon→JS | | 660 |
 
 
 ## プログラム一覧
