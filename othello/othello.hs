@@ -1,5 +1,7 @@
 import Data.Vector as V ((//), (!), replicate, Vector)
 import Data.List(intercalate)
+import Data.Tree.Game_tree.Game_tree -- game-tree library
+import Data.Tree.Game_tree.Negascout
 
 data Color = Black | White deriving(Eq)
 instance Show Color where
@@ -13,6 +15,11 @@ type Ply = Int
 type Counts = (Int,Int)
 data Othello = Othello !Board Ply Counts
 data Move = Move Coord [Coord] | Pass deriving(Show)
+
+instance Game_tree Othello where
+    is_terminal = gameEnd
+    node_value o = (if turnColor o==Black then 1 else -1)*evaluate o
+    children o = map (flip doMove o)$ getMoves o
 
 instance Show Othello where
     show (Othello board ply counts)=showBoard board++"\nply:"++show ply++",counts:"++show counts
@@ -114,3 +121,4 @@ alphabeta depth last game = either id id$ foldl (flip f) (Right (BestMove Pass i
                                                                  else BestMove mv2 ev2 (q1+q2)
 
 main = print$ alphabeta 10 Nothing initialOthello
+--main = print$ alpha_beta_search initialOthello 10
