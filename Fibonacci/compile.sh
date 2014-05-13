@@ -18,3 +18,4 @@ ocamlopt -o out/fib_ml fib.ml
 haxe fib_js.hxml 
 haxe fib_cpp.hxml 
 tsc --out fib_ts.js fib.ts
+scalac -d out fib.scala
