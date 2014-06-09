@@ -28,7 +28,7 @@
 | PHP | 38 | 61 | |
 | Perl | | 136 | |
 | Ceylon→JS | | 660 |  |
-| Swift | NA | | 計測はYosemite待ち |
+| Swift | | NA | 計測はYosemite待ち |
 
 ###所感
 GolangにせよV8にせよ，Google製言語のオブジェクトを扱う速さが目立っています．
