@@ -22,3 +22,4 @@ time scala -cp out Fib
 time ./out/fib_swift
 time ./out/fib_objc
 time mono ./out/fib_vb.exe 
+time wspace ./fib30.ws
