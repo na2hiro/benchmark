@@ -21,3 +21,4 @@ time node fib_ts.js
 time scala -cp out Fib
 time ./out/fib_swift
 time ./out/fib_objc
+time mono ./out/fib_vb.exe 

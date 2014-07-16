@@ -17,6 +17,7 @@
 | Golang | 0.83 | 0.96 | オブジェクト操作が速い |
 | Scala | | 0.96 | |
 | C# | | 1.2 | |
+| Visual Basic | | 1.4 | |
 | Haskell | 4.5 | 1.5 | |
 | Ceylon→Java | | 1.5 | |
 | JavaScript(V8) | | 1.6 | オブジェクト操作が速い |
