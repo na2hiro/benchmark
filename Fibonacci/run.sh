@@ -19,3 +19,4 @@ time node fib_hx.js
 time fib_hx/Fib
 time node fib_ts.js
 time scala -cp out Fib
+time ./out/fib_swift
