@@ -20,3 +20,4 @@ haxe fib_cpp.hxml
 tsc --out fib_ts.js fib.ts
 scalac -d out fib.scala
 swift -Ofast -o out/fib_swift fib.swift
+gcc -framework Foundation -O3 -o out/fib_objc fib.m
